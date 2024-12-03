@@ -436,17 +436,30 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(arr) {
-  const { length } = arr;
-  const res = arr;
-  for (let i = 0; i < length; i += 1) {
-    for (let j = i; j < length; j += 1) {
-      if (arr[i] > arr[j]) {
-        [res[i], res[j]] = [res[j], res[i]];
-      }
+function sortByAsc(array) {
+  const arr = array;
+  let { length } = arr;
+
+  const heapify = (ar, i) => {
+    const a = ar;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+    let max = i;
+    if (left < length && a[left] > a[max]) max = left;
+    if (right < length && a[right] > a[max]) max = right;
+    if (max !== i) {
+      [a[max], a[i]] = [a[i], a[max]];
+      heapify(a, max);
     }
+  };
+
+  for (let i = Math.floor(length / 2); i >= 0; i -= 1) heapify(arr, i);
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+    length -= 1;
+    heapify(arr, 0);
   }
-  return res;
+  return arr;
 }
 
 /**
