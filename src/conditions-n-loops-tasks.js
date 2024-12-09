@@ -479,8 +479,31 @@ function sortByAsc(array) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  function singleShuffle(input) {
+    let odd = '';
+    let even = '';
+    for (let i = 0; i < str.length - 1; i += 2) {
+      even += input[i];
+      odd += input[i + 1];
+    }
+    return even + odd;
+  }
+
+  let curr = str;
+  const unique = new Map();
+
+  for (let i = 0; i < iterations; i += 1) {
+    if (unique.has(curr)) {
+      curr = unique.get(curr);
+    } else {
+      const temp = curr;
+      curr = singleShuffle(curr);
+      unique.set(temp, curr);
+    }
+  }
+
+  return curr;
 }
 
 /**
