@@ -438,26 +438,15 @@ function rotateMatrix(matrix) {
  */
 function sortByAsc(array) {
   const arr = array;
-  let { length } = arr;
 
-  const heapify = (ar, i) => {
-    const a = ar;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
-    let max = i;
-    if (left < length && a[left] > a[max]) max = left;
-    if (right < length && a[right] > a[max]) max = right;
-    if (max !== i) {
-      [a[max], a[i]] = [a[i], a[max]];
-      heapify(a, max);
+  for (let i = 1; i < arr.length; i += 1) {
+    const curr = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > curr) {
+      arr[j + 1] = arr[j];
+      j -= 1;
     }
-  };
-
-  for (let i = Math.floor(length / 2); i >= 0; i -= 1) heapify(arr, i);
-  for (let i = arr.length - 1; i > 0; i -= 1) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    length -= 1;
-    heapify(arr, 0);
+    arr[j + 1] = curr;
   }
   return arr;
 }
@@ -523,8 +512,42 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = [];
+  let temp = number;
+  while (temp > 0) {
+    const rest = temp % 10;
+    digits.push(rest);
+    temp = Math.trunc(temp / 10);
+  }
+
+  const leftPart = [];
+  let pivot = -1;
+  for (let i = 0; i < digits.length - 2; i += 1) {
+    leftPart.push(digits[i]);
+    if (digits[i] > digits[i + 1]) {
+      pivot = i + 1;
+      break;
+    }
+  }
+  if (pivot === -1) return number;
+
+  let swap = -1;
+  for (let i = 0; i < pivot; i += 1) {
+    if (leftPart[i] > digits[pivot]) {
+      swap = i;
+      break;
+    }
+  }
+
+  [digits[pivot], leftPart[swap]] = [leftPart[swap], digits[pivot]];
+  leftPart.sort((a, b) => a - b);
+  const rightPart = [];
+  for (let i = digits.length - 1; i >= pivot; i -= 1) {
+    rightPart.push(digits[i]);
+  }
+
+  return parseInt([...rightPart, ...leftPart].join(''), 10);
 }
 
 module.exports = {
